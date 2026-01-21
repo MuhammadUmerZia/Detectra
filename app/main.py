@@ -159,6 +159,3 @@ def get_common_words(text, n=5):
 def health():
     return {"status": "ok", "model": model.__class__.__name__}
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
