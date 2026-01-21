@@ -5,6 +5,7 @@
   ],
   "routes": [
     { "src": "/detect", "dest": "app/main.py" },
+    { "src": "/health", "dest": "app/main.py" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
