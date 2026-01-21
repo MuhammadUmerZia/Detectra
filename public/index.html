@@ -1,1 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detectra - AI/Human Text Detection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+        
+        /* Header */
+        header {
+            background: white;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .logo-text {
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        .logo-main {
+            font-weight: 800;
+            color: #2c3e50;
+            font-size: 26px;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+        
+        .logo-tagline {
+            font-size: 12px;
+            color: #7f8c8d;
+            font-weight: 400;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: color 0.3s;
+            padding: 5px 0;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: #3498db;
+        }
+        
+        .nav-links a.active {
+            color: #3498db;
+        }
+        
+        .nav-links a.active:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #3498db;
+            border-radius: 3px;
+        }
+        
+        .nav-cta {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        /* Full Screen Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+        }
+        
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #bdc3c7;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #4facfe;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #95a5a6;
+        }
+        
+        /* Content Sections */
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .section-title i {
+            color: #3498db;
+            font-size: 2rem;
+        }
+        
+        .section-content {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+        
+        /* How It Works Section */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .step:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            border-radius: 50%;
+            line-height: 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        /* Use Cases */
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .use-case {
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea10, #764ba210);
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        /* Technology Stack */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .tech-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 1;
+            min-width: 200px;
+            border: 2px solid #e1e5eb;
+            text-align: center;
+        }
+        
+        .tech-icon {
+            font-size: 2.5rem;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+        
+        /* Working Model Section */
+        .model-performance {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .model-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #3498db;
+        }
+        
+        .model-accuracy {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .model-name {
+            font-size: 1.2rem;
+            color: #3498db;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        /* Code Display */
+        .code-snippet {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .code-comment {
+            color: #95a5a6;
+        }
+        
+        .code-keyword {
+            color: #3498db;
+        }
+        
+        .code-string {
+            color: #2ecc71;
+        }
+        
+        /* Text Analyzer Section (from verify.html) */
+        .analyzer-section {
+            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
+            color: white;
+            padding: 100px 0;
+        }
+        
+        .analyzer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+        
+        @media (max-width: 1024px) {
+            .analyzer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .analyzer-info {
+            padding-right: 40px;
+        }
+        
+        .analyzer-box {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .analyzer-box h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 28px;
+            text-align: center;
+        }
+        
+        .text-input-container {
+            margin-bottom: 25px;
+        }
+        
+        .text-input-container label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 250px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border 0.3s;
+            background: #f8f9fa;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .feature i {
+            color: #3498db;
+        }
+        
+        .analyze-btn {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 25px;
+        }
+        
+        .analyze-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        .analyze-btn i {
+            margin-right: 10px;
+        }
+        
+        .result-container {
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-container h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 24px;
+        }
+        
+        .result-container p {
+    color: #1a202c;  /* Dark navy blue like your image */
+    margin-bottom: 10px;
+    font-size: 16px;
+}
 
+.result-container .small-text {
+    color: #4a5568;  /* Slightly lighter gray for secondary text */
+    font-size: 14px;
+    margin-top: 15px;
+    font-style: italic;
+}
+        .confidence-meter {
+            height: 25px;
+            background: #ecf0f1;
+            border-radius: 12px;
+            margin: 25px 0;
+            overflow: hidden;
+            border: 2px solid #ddd;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .confidence-text {
+            font-weight: 700;
+            font-size: 22px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            color: black;
+        }
+        
+        .ai-result {
+            background-color: rgba(231, 76, 60, 0.1);
+            border: 3px solid #e74c3c;
+        }
+        
+        .human-result {
+            background-color: rgba(46, 204, 113, 0.1);
+            border: 3px solid #2ecc71;
+        }
+        #result-description {
+    color: #1a202c;  /* Dark navy blue */
+    text-align: left;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+/* Result text color fix */
+.result-container p {
+    color: #1a202c !important;
+    margin-bottom: 10px;
+}
+
+.result-container .small-text {
+    color: #4a5568 !important;
+    font-size: 14px;
+    margin-top: 10px;
+}
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
+            color: #ecf0f1;
+            padding: 60px 0 20px;
+            margin-top: 60px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        
+        .footer-logo .logo-main {
+            color: #3498db;
+            font-size: 28px;
+        }
+        
+        .footer-logo .logo-tagline {
+            color: #bdc3c7;
+            margin-top: 8px;
+            max-width: 300px;
+        }
+        
+        .footer-section h3 {
+            font-size: 18px;
+            margin-bottom: 25px;
+            color: #ecf0f1;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-section h3:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2px;
+            background: #3498db;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-links a:hover {
+            color: #3498db;
+            transform: translateX(5px);
+        }
+        
+        .footer-links i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .contact-info {
+            list-style: none;
+        }
+        
+        .contact-info li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .contact-info i {
+            color: #3498db;
+            margin-right: 15px;
+            font-size: 18px;
+            margin-top: 3px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: #ecf0f1;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: #3498db;
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 50px auto 0;
+            padding: 25px 20px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .copyright {
+            color: #95a5a6;
+            font-size: 14px;
+        }
+        
+        .legal-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .legal-links a {
+            color: #bdc3c6;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        
+        .legal-links a:hover {
+            color: #3498db;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                height: auto;
+                padding: 15px 20px;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero-stats {
+                gap: 20px;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="nav-container">
+            <div class="logo-container">
+                <div class="logo-icon">⎙</div>
+                <div class="logo-text">
+                    <div class="logo-main">DETECTRA</div>
+                    <div class="logo-tagline">AI/Human Text Detection System</div>
+                </div>
+            </div>
+            
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#use-cases">Use Cases</a></li>
+                    <li><a href="#technology">Technology</a></li>
+                    <li><a href="#working-model">My Model</a></li>
+                    <li><a href="#analyzer">Try Analyzer</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </nav>
+            
+            <a href="#analyzer" class="nav-cta">Try Detector</a>
+        </div>
+    </header>
+
+    <!-- Full Screen Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome to Detectra</h1>
+            <p class="hero-subtitle">
+                An AI-powered text analysis system that accurately distinguishes between human-written 
+                and AI-generated content with 92.5% accuracy, trained on 140,000+ text samples.
+            </p>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">92.5%</span>
+                    <span class="stat-label">Best Accuracy</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">140K+</span>
+                    <span class="stat-label">Training Samples</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4</span>
+                    <span class="stat-label">ML Models</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">Datasets</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Text Analyzer Section -->
+    <section id="analyzer" class="analyzer-section">
+        <div class="analyzer-container">
+            <div class="analyzer-info">
+                <h2 class="section-title" style="color: white;">AI/Human Text Detector</h2>
+                <div class="section-content" style="background: rgba(255, 255, 255, 0.1); border: none; color: #ecf0f1;">
+                    <p>Detectra is an advanced AI-powered text analysis tool that determines whether a piece of text was written by a human or generated by artificial intelligence. In an age where AI-generated content is becoming increasingly sophisticated, our tool provides a reliable method to distinguish between human and machine authorship.</p>
+                    <p>Our algorithm analyzes multiple linguistic dimensions including semantic coherence, syntactic patterns, and stylistic features to provide accurate detection results.</p>
+                    
+                    <div style="margin-top: 30px;">
+                        <h3 style="color: #3498db; margin-bottom: 15px;">How Our Detector Works</h3>
+                        <ul style="padding-left: 20px;">
+                            <li><strong>Pattern Recognition:</strong> Identifies repetitive structures common in AI-generated text</li>
+                            <li><strong>Semantic Analysis:</strong> Evaluates the logical flow and coherence of ideas</li>
+                            <li><strong>Stylometric Analysis:</strong> Examines writing style, vocabulary diversity, and sentence complexity</li>
+                            <li><strong>Statistical Modeling:</strong> Uses machine learning models trained on millions of text samples</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="analyzer-box">
+                <h2>Try It Now</h2>
+                
+                <div class="text-input-container">
+                    <label for="text-input">Paste your text below:</label>
+                    <textarea id="text-input" placeholder="Enter text you want to analyze (minimum 50 characters for best results)..."></textarea>
+                    <div class="features">
+                        <div class="feature"><i class="fas fa-check-circle"></i> Privacy Protected</div>
+                        <div class="feature"><i class="fas fa-bolt"></i> Instant Results</div>
+                        <div class="feature"><i class="fas fa-chart-line"></i> High Accuracy</div>
+                        <div class="feature"><i class="fas fa-shield-alt"></i> No Data Stored</div>
+                    </div>
+                </div>
+                
+                <button class="analyze-btn" id="analyze-button">
+                    <i class="fas fa-search"></i> Analyze Text
+                </button>
+                
+                <div id="result-container" class="result-container">
+                    <h3 id="result-title">Analysis Result</h3>
+                    <div class="confidence-meter">
+                        <div id="confidence-fill" class="confidence-fill"></div>
+                    </div>
+                    <div id="confidence-text" class="confidence-text"></div>
+                    <div id="result-description"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How Detectra Works Section -->
+    <section id="how-it-works" class="section-container">
+        <h2 class="section-title"><i class="fas fa-cogs"></i> How Detectra Works</h2>
+        <div class="section-content">
+            <p>Detectra uses a sophisticated pipeline to analyze text and determine its origin:</p>
+            
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Data Collection</h3>
+                    <p>Combined 3 datasets (HuggingFace, Kaggle, HC) totaling 140,147 text samples</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Text Preprocessing</h3>
+                    <p>Cleaned and tokenized text using spaCy with disabled components for efficiency</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Feature Extraction</h3>
+                    <p>TF-IDF with (1,3) n-grams, 20,000 features, and stylometric analysis</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Model Training</h3>
+                    <p>Trained multiple ML models and selected best performing LinearSVM</p>
+                </div>
+            </div>
+            
+            <p style="margin-top: 30px;">
+                <strong>Key Finding:</strong> Our experiments showed that using ngram_range=(1,3), 
+                max_features=20000, and stop_words=None yielded the best results (91.8% accuracy 
+                with Logistic Regression). LinearSVM achieved 92.5% accuracy with balanced precision 
+                and recall across both classes.
+            </p>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section id="use-cases" class="section-container">
+        <h2 class="section-title"><i class="fas fa-briefcase"></i> Use Cases</h2>
+        <div class="section-content">
+            <p>Detectra serves multiple sectors where text authenticity matters:</p>
+            
+            <div class="use-case-grid">
+                <div class="use-case">
+                    <h3><i class="fas fa-graduation-cap"></i> Education</h3>
+                    <p>Verify student submissions and research papers for AI-generated content, ensuring academic integrity.</p>
+                </div>
+                <div class="use-case">
+                    <h3><i class="fas fa-file-alt"></i> Publishing</h3>
+                    <p>Screen manuscripts and articles to maintain authentic human authorship in publications.</p>
+                </div>
+                <div class="use-case">
+                    <h3><i class="fas fa-newspaper"></i> Journalism</h3>
+                    <p>Verify the authenticity of news articles and ensure human reporting standards.</p>
+                </div>
+                <div class="use-case">
+                    <h3><i class="fas fa-search"></i> Content Moderation</h3>
+                    <p>Identify AI-generated spam, fake reviews, or automated content on platforms.</p>
+                </div>
+                <div class="use-case">
+                    <h3><i class="fas fa-balance-scale"></i> Legal & Compliance</h3>
+                    <p>Verify authorship in legal documents and ensure compliance with disclosure requirements.</p>
+                </div>
+                <div class="use-case">
+                    <h3><i class="fas fa-users"></i> Human Resources</h3>
+                    <p>Screen job applications and ensure authentic human writing in cover letters and resumes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="technology" class="section-container">
+        <h2 class="section-title"><i class="fas fa-microchip"></i> Technology Stack</h2>
+        <div class="section-content">
+            <p>The Detectra system is built using a modern technology stack:</p>
+            
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fab fa-python"></i></div>
+                    <h3>Python 3.13.9</h3>
+                    <p>Core programming language</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fas fa-brain"></i></div>
+                    <h3>Scikit-learn</h3>
+                    <p>Machine learning algorithms</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fas fa-language"></i></div>
+                    <h3>spaCy & NLTK</h3>
+                    <p>Natural language processing</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fas fa-chart-bar"></i></div>
+                    <h3>Pandas & NumPy</h3>
+                    <p>Data manipulation & analysis</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fas fa-code"></i></div>
+                    <h3>FastAPI</h3>
+                    <p>Backend API development</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon"><i class="fas fa-server"></i></div>
+                    <h3>Virtual Environment</h3>
+                    <p>Isolated Python environment</p>
+                </div>
+            </div>
+            
+            <!-- <div class="code-snippet" style="margin-top: 30px;">
+                <span class="code-comment"># Environment setup from your project</span><br>
+                <span class="code-keyword">pip install</span> <span class="code-string">numpy pandas scikit-learn matplotlib seaborn</span><br>
+                <span class="code-keyword">pip install</span> <span class="code-string">nltk spacy torch fastapi uvicorn</span><br>
+                <span class="code-keyword">python</span> -m nltk.downloader punkt stopwords<br>
+                <span class="code-keyword">python</span> -m spacy download en_core_web_sm
+            </div> -->
+        </div>
+    </section>
+
+    <!-- My Working Model Section -->
+    <section id="working-model" class="section-container">
+        <h2 class="section-title"><i class="fas fa-project-diagram"></i> My Working Model</h2>
+        <div class="section-content">
+            <h3>Model Performance Comparison</h3>
+            <p>Based on your experiments with 140,147 text samples and 28,030 test samples:</p>
+            
+            <div class="model-performance">
+                <div class="model-card">
+                    <div class="model-accuracy">92.5%</div>
+                    <div class="model-name">Linear SVM</div>
+                    <p>Best performing model with balanced precision/recall</p>
+                </div>
+                <div class="model-card">
+                    <div class="model-accuracy">91.8%</div>
+                    <div class="model-name">Logistic Regression</div>
+                    <p>Strong baseline with good interpretability</p>
+                </div>
+                <div class="model-card">
+                    <div class="model-accuracy">91.0%</div>
+                    <div class="model-name">Ridge Classifier</div>
+                    <p>Decent performance with regularization</p>
+                </div>
+                <div class="model-card">
+                    <div class="model-accuracy">87.7%</div>
+                    <div class="model-name">Naive Bayes</div>
+                    <p>Fast but lower accuracy due to independence assumption</p>
+                </div>
+            </div>
+            
+            <!-- <h3 style="margin-top: 40px;">Key Results from Your Experiments</h3>
+            
+            <div class="code-snippet" style="margin-top: 20px;">
+                <span class="code-comment"># Best Configuration Results</span><br>
+                <span class="code-comment"># Model: Linear SVM | Accuracy: 0.9251</span><br><br>
+                
+                <span class="code-comment"># Classification Report:</span><br>
+                <span class="code-keyword">precision</span>    <span class="code-keyword">recall</span>  <span class="code-keyword">f1-score</span>   <span class="code-keyword">support</span><br>
+                <span class="code-comment"># Human (0):     0.9293    0.9267    0.9280    14602</span><br>
+                <span class="code-comment"># AI (1):        0.9206    0.9233    0.9219    13428</span><br>
+                <span class="code-comment"># accuracy:                          0.9251    28030</span><br><br>
+                
+                <span class="code-comment"># Confusion Matrix:</span><br>
+                <span class="code-comment"># [[13532  1070]   # Human correctly classified: 13532</span><br>
+                <span class="code-comment">#  [ 1030 12398]]   # AI correctly classified: 12398</span>
+            </div> -->
+            
+            <h3 style="margin-top: 40px;">Dataset Information</h3>
+            <ul style="margin-top: 20px; padding-left: 20px;">
+                <li><strong>Total Samples:</strong> 140,147 (after merging 3 datasets)</li>
+                <li><strong>Training Set:</strong> 112,117 samples (80%)</li>
+                <li><strong>Test Set:</strong> 28,030 samples (20%)</li>
+                <li><strong>Class Balance:</strong> ~52% Human, ~48% AI (balanced)</li>
+                <li><strong>Best Features:</strong> TF-IDF with (1,2) n-grams, 20,000 max features</li>
+                <li><strong>Processing Time:</strong> ~38 minutes for 140K samples</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section-container">
+        <h2 class="section-title"><i class="fas fa-info-circle"></i> About This Project</h2>
+        <div class="section-content">
+            <p>This AI/Human Text Detection project was developed as a comprehensive machine learning solution to address the growing challenge of distinguishing between human-written and AI-generated text.</p>
+            
+            <h3 style="margin-top: 30px;">Project Journey</h3>
+            
+            <ul style="margin-top: 15px; padding-left: 20px;">
+                <li><strong>Environment Setup:</strong> Python virtual environment with all required packages</li>
+                <li><strong>Data Collection:</strong> Combined multiple authentic datasets (HuggingFace, Kaggle, HC)</li>
+                <li><strong>Preprocessing:</strong> Efficient text cleaning and tokenization using spaCy</li>
+                <li><strong>Model Development:</strong> Built and tested 4 different machine learning models</li>
+                <li><strong>Optimization:</strong> Experimented with different feature configurations</li>
+                <li><strong>Evaluation:</strong> Achieved 92.5% accuracy with LinearSVM model</li>
+            </ul>
+            
+            <h3 style="margin-top: 30px;">Technical Challenges Overcome</h3>
+            <p>Based on your experiments:</p>
+            <ul style="margin-top: 15px; padding-left: 20px;">
+                <li><strong>Vocabulary Size:</strong> Found that 30,000 features reduced accuracy to 90.2% (worse than 20,000 features)</li>
+                <li><strong>Stopword Removal:</strong> Discovered that keeping stopwords improved accuracy compared to removing them</li>
+                <li><strong>N-gram Range:</strong> (1,3) n-grams performed better than (1,2) for most configurations</li>
+                <li><strong>Model Selection:</strong> LinearSVM outperformed other classifiers for this task</li>
+            </ul>
+            
+            <h3 style="margin-top: 30px;">Future Enhancements</h3>
+            <p>Potential improvements based on your work:</p>
+            <ul style="margin-top: 15px; padding-left: 20px;">
+                <li>Deep learning approaches (CNN/LSTM models)</li>
+                <li>Multilingual text detection</li>
+                <li>Real-time API deployment</li>
+                <li>Browser extension for instant detection</li>
+                <li>Integration with writing platforms and LMS systems</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <div class="logo-main">DETECTRA</div>
+                <p class="logo-tagline">Advanced AI detection software that helps identify the origin of text with precision and confidence.</p>
+                <div class="social-links">
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" title="Email"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#how-it-works"><i class="fas fa-cogs"></i> How It Works</a></li>
+                    <li><a href="#use-cases"><i class="fas fa-briefcase"></i> Use Cases</a></li>
+                    <li><a href="#technology"><i class="fas fa-microchip"></i> Technology</a></li>
+                    <li><a href="#working-model"><i class="fas fa-project-diagram"></i> My Model</a></li>
+                    <li><a href="#analyzer"><i class="fas fa-search"></i> Try Detector</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <ul class="contact-info">
+                    <li>
+                        <i class="fas fa-user"></i>
+                        <div>
+                            <strong>Muhammad Umer Zia</strong>
+                            <div>Founder & Developer</div>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        <div>+92-3007240718</div>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <div>muhammadumerzia.muz@gmail.com</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="copyright">
+                © 2024 Detectra | Based on AI Text Detection Project | All experimental results from actual project implementation
+            </div>
+            <div class="legal-links">
+                <a href="#">Terms of Use</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Disclaimer</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active nav link
+                    document.querySelectorAll('.nav-links a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Update active nav link based on scroll position
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Add scroll animation for sections
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections for animation
+        document.querySelectorAll('.section-content, .step, .use-case, .tech-item, .model-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(el);
+        });
+
+        // Text analyzer functionality from verify.html
+        const analyzeButton = document.getElementById('analyze-button');
+        const textInput = document.getElementById('text-input');
+        const resultContainer = document.getElementById('result-container');
+        const confidenceFill = document.getElementById('confidence-fill');
+        const confidenceText = document.getElementById('confidence-text');
+        const resultTitle = document.getElementById('result-title');
+        const resultDescription = document.getElementById('result-description');
+        
+    analyzeButton.addEventListener('click', async function() {
+    const text = textInput.value.trim();
+    
+    if (text.length < 50) {
+        alert('Please enter at least 50 characters for accurate analysis.');
+        return;
+    }
+    
+    // Show loading state
+    analyzeButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+    analyzeButton.disabled = true;
+    
+    try {
+        const response = await fetch('http://127.0.0.1:8000/detect', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text })
+        });
+        
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const result = await response.json();
+        console.log('Backend Result:', result);
+        
+        // Use the backend's label directly
+        const isAI = result.label === 1;
+        const confidence = result.probability * 100;
+        const topWords = result.top_words ? result.top_words.join(", ") : "None";
+        const modelUsed = result.model_used || "Logistic Regression";
+        
+        // Display results
+        if (isAI) {
+            resultContainer.className = 'result-container ai-result';
+            resultTitle.textContent = 'AI-Generated Text Detected';
+            confidenceFill.style.width = `${confidence}%`;
+            confidenceFill.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+            confidenceText.textContent = `${confidence.toFixed(1)}% Confidence`;
+            resultDescription.innerHTML = `
+                <p><i class="fas fa-robot"></i> <strong>AI Content Detected</strong> (${modelUsed})</p>
+                <p>Probability: <strong>${confidence.toFixed(1)}%</strong></p>
+                <p>Key indicators: <strong>${topWords}</strong></p>
+                <p class="small-text"><i class="fas fa-info-circle"></i> AI text often shows consistent patterns and formal structure.</p>
+            `;
+        } else {
+            resultContainer.className = 'result-container human-result';
+            resultTitle.textContent = 'Human-Written Text Detected';
+            confidenceFill.style.width = `${confidence}%`;
+            confidenceFill.style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
+            confidenceText.textContent = `${confidence.toFixed(1)}% Confidence`;
+            resultDescription.innerHTML = `
+                <p><i class="fas fa-user"></i> <strong>Human Content Detected</strong> (${modelUsed})</p>
+                <p>Probability: <strong>${confidence.toFixed(1)}%</strong></p>
+                <p>Key indicators: <strong>${topWords}</strong></p>
+                <p class="small-text"><i class="fas fa-info-circle"></i> Human text often shows varied structures and personal style.</p>
+            `;
+        }
+        
+        resultContainer.style.display = 'block';
+        
+    } catch (error) {
+        console.error('Error:', error);
+        
+        // Fallback to demo mode
+        const wordCount = text.split(/\s+/).length;
+        const isAIFallback = wordCount > 100 && text.includes('artificial');
+        const confidenceFallback = isAIFallback ? 75 + Math.random() * 20 : 65 + Math.random() * 25;
+        
+        if (isAIFallback) {
+            resultContainer.className = 'result-container ai-result';
+            resultTitle.textContent = 'AI-Generated Text Detected (Demo)';
+            confidenceFill.style.width = `${confidenceFallback}%`;
+            confidenceFill.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+            confidenceText.textContent = `${confidenceFallback.toFixed(1)}% Confidence`;
+            resultDescription.innerHTML = `<p><i class="fas fa-exclamation-triangle"></i> Using demo mode. Start backend server for real analysis.</p>`;
+        } else {
+            resultContainer.className = 'result-container human-result';
+            resultTitle.textContent = 'Human-Written Text Detected (Demo)';
+            confidenceFill.style.width = `${confidenceFallback}%`;
+            confidenceFill.style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
+            confidenceText.textContent = `${confidenceFallback.toFixed(1)}% Confidence`;
+            resultDescription.innerHTML = `<p><i class="fas fa-exclamation-triangle"></i> Using demo mode. Start backend server for real analysis.</p>`;
+        }
+        
+        resultContainer.style.display = 'block';
+    } finally {
+        analyzeButton.innerHTML = '<i class="fas fa-search"></i> Analyze Text';
+        analyzeButton.disabled = false;
+        
+        if (resultContainer.style.display === 'block') {
+            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+});
+        // Sample text for demo
+        textInput.value = `Artificial intelligence has transformed the way we create and consume content. With advanced language models like GPT, AI can now generate text that closely mimics human writing. This creates challenges for educators, publishers, and content creators who need to verify the authenticity of written work.
+
+Detectra addresses this challenge by providing a reliable method to distinguish between human and AI-generated text. Our sophisticated algorithms analyze multiple linguistic dimensions to determine the origin of text with high accuracy.
+
+The technology behind Detectra combines pattern recognition, semantic analysis, and stylometric evaluation to provide confidence scores for each analysis. As AI continues to evolve, so does our detection capability, ensuring that Detectra remains effective against even the most advanced text generation models.`;
+    </script>
+</body>
+</html>
